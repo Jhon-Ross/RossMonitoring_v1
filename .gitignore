@@ -1,0 +1,17 @@
+*.log
+.DS_Store
+
+.env
+.env.*
+!.env.example
+
+node_modules/
+dist/
+build/
+coverage/
+
+lspd-monitoring-system/node_modules/
+lspd-monitoring-system/dist/
+lspd-monitoring-system/build/
+
+web/assets/*.map

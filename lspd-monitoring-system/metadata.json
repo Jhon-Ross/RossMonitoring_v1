@@ -1,0 +1,5 @@
+{
+  "name": "LSPD Monitoring System",
+  "description": "Electronic monitoring system for LSPD EMS Central Database, allowing registration and tracking of ankle monitors.",
+  "requestFramePermissions": []
+}
