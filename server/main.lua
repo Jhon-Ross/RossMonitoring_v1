@@ -1,4 +1,18 @@
--- Initialize Variables
+--[[ 
+██████╗  ██████╗ ███████╗███████╗ 
+██╔══██╗██╔═══██╗██╔════╝██╔════╝ 
+██████╔╝██║   ██║███████╗███████╗ 
+██╔══██╗██║   ██║╚════██║╚════██║ 
+██║  ██║╚██████╔╝███████║███████║ 
+╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝ 
+
+========================================================= 
+R.P.M.S - ROSS Police Monitoring System 
+Secure Electronic Monitoring Solution 
+Property of ROSS Development 
+========================================================= 
+]] 
+
 local ActiveMonitors = {}
 
 local function HasAccess(source)
