@@ -13,6 +13,18 @@ Property of ROSS Development
 ========================================================= 
 ]] 
 
+AddEventHandler('onResourceStart', function(resourceName)
+    if resourceName ~= GetCurrentResourceName() then return end
+    print([[
+
+=========================================================
+R.P.M.S - ROSS Police Monitoring System
+Secure Electronic Monitoring Solution
+Property of ROSS Development
+=========================================================
+]])
+end)
+
 local ActiveMonitors = {}
 
 local function HasAccess(source)
