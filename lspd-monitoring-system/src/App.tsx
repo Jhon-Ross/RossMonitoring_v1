@@ -2645,6 +2645,11 @@ export default function App() {
     if (data.logs) setLogs(data.logs);
   });
 
+  useNuiEvent('updatePersonInputs', (data: any) => {
+    if (data.name) setPersonName(data.name);
+    if (data.age) setPersonAge(data.age.toString());
+  });
+
   useNuiEvent('zoneSelected', (data: any) => {
     setSelectedZone({
       x: Number(data.x),
@@ -2669,6 +2674,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [priority, setPriority] = useState<'low' | 'high'>('high');
   const [passportId, setPassportId] = useState('');
+  const [personName, setPersonName] = useState('');
+  const [personAge, setPersonAge] = useState('');
   const [reason, setReason] = useState('');
   const [duration, setDuration] = useState('0');
   const [durationType, setDurationType] = useState('Hours');
@@ -2738,9 +2745,17 @@ export default function App() {
 
   const resetRegisterForm = () => {
     setPassportId('');
+    setPersonName('');
+    setPersonAge('');
     setReason('');
     setDuration('0');
     setSelectedZone(null);
+  };
+
+  const handleCheckPerson = () => {
+    if (passportId) {
+      fetchNui('checkPerson', { id: passportId });
+    }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -2849,7 +2864,7 @@ export default function App() {
                           type="text"
                           required
                         />
-                        <button type="button" className="absolute right-2 p-2 text-primary hover:bg-primary/10 rounded-md transition-colors">
+                        <button type="button" onClick={handleCheckPerson} className="absolute right-2 p-2 text-primary hover:bg-primary/10 rounded-md transition-colors">
                           <Search size={18} />
                         </button>
                       </div>
@@ -2860,7 +2875,8 @@ export default function App() {
                         className="w-full bg-slate-900/50 border-border-dark/50 rounded-lg text-white py-3 px-4 cursor-not-allowed outline-none" 
                         readOnly 
                         type="text" 
-                        value="John 'Soap' MacTavish"
+                        value={personName}
+                        placeholder="Nome do Jogador"
                       />
                     </div>
                     <div className="md:col-span-1 opacity-60">
@@ -2869,7 +2885,8 @@ export default function App() {
                         className="w-full bg-slate-900/50 border-border-dark/50 rounded-lg text-white py-3 px-4 cursor-not-allowed outline-none" 
                         readOnly 
                         type="text" 
-                        value={`34 ${translations[settings.language as keyof typeof translations].yearsOld}`}
+                        value={personAge ? `${personAge} ${translations[settings.language as keyof typeof translations].yearsOld}` : ''}
+                        placeholder="Idade"
                       />
                     </div>
                   </div>
@@ -2892,7 +2909,6 @@ export default function App() {
                         className="w-full bg-input-dark border-border-dark rounded-lg focus:ring-primary focus:border-primary text-white p-4 placeholder:text-white/60 resize-none outline-none transition-all" 
                         placeholder={translations[settings.language as keyof typeof translations].provideLegal} 
                         rows={5}
-                        required
                       />
                       <p className="text-[10px] text-white mt-2 italic font-medium tracking-tight">{translations[settings.language as keyof typeof translations].requiredAudit}</p>
                     </div>

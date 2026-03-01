@@ -76,6 +76,57 @@ function Framework.HasPermission(source, perm, level)
     return false
 end
 
+function Framework.GetCharacterData(target_id)
+    if Framework.Type == 'vrp' then
+        local passport = parseInt(target_id)
+        
+        -- Tentativa 1: Via vRP.Identity (funciona se estiver cacheado/online)
+        if vRP and vRP.Identity then
+            local identity = vRP.Identity(passport)
+            if identity then
+                return {
+                    name = identity.name .. " " .. identity.name2,
+                    age = identity.age
+                }
+            end
+        end
+
+        -- Tentativa 2: Query direta (caso offline ou vRP.Identity falhe)
+        -- Tabela 'characters' (padrão Creative/Summerz)
+        local p = promise.new()
+        -- NOTA: No SQL fornecido, as colunas são: id, name, name2, age. 
+        exports.oxmysql:execute('SELECT name, name2, age FROM characters WHERE id = ?', { passport }, function(result)
+            p:resolve(result)
+        end)
+        local result = Citizen.Await(p)
+        
+        if result and result[1] then
+            return {
+                name = result[1].name .. " " .. result[1].name2,
+                age = result[1].age
+            }
+        end
+
+    elseif Framework.Type == 'esx' then
+        local xPlayer = ESX.GetPlayerFromId(parseInt(target_id))
+        if xPlayer then
+            return {
+                name = xPlayer.getName(),
+                age = xPlayer.get('dateofbirth')
+            }
+        end
+    elseif Framework.Type == 'qbcore' then
+        local Player = QBCore.Functions.GetPlayer(parseInt(target_id))
+        if Player then
+            return {
+                name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname,
+                age = Player.PlayerData.charinfo.birthdate
+            }
+        end
+    end
+    return nil
+end
+
 function Framework.Notify(source, message, type)
     if Framework.Type == 'vrp' then
         TriggerClientEvent("Notify", source, type, message)

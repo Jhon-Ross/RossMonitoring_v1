@@ -105,6 +105,19 @@ RegisterNUICallback('removeMonitor', function(data, cb)
     cb('ok')
 end)
 
+RegisterNUICallback('checkPerson', function(data, cb)
+    TriggerServerEvent('RossMonitoring:CheckPerson', data.id)
+    cb('ok')
+end)
+
+RegisterNetEvent('RossMonitoring:ReturnPersonData')
+AddEventHandler('RossMonitoring:ReturnPersonData', function(data)
+    SendNUIMessage({
+        action = 'updatePersonInputs',
+        data = data
+    })
+end)
+
 local function openBaseMap()
     if GetResourceState('pause') == 'started' then
         ExecuteCommand('ActiveMap')

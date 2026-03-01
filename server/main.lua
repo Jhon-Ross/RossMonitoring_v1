@@ -17,6 +17,13 @@ AddEventHandler('onResourceStart', function(resourceName)
     if resourceName ~= GetCurrentResourceName() then return end
     print([[
 
+██████╗  ██████╗ ███████╗███████╗ 
+██╔══██╗██╔═══██╗██╔════╝██╔════╝ 
+██████╔╝██║   ██║███████╗███████╗ 
+██╔══██╗██║   ██║╚════██║╚════██║ 
+██║  ██║╚██████╔╝███████║███████║ 
+╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝ 
+
 =========================================================
 R.P.M.S - ROSS Police Monitoring System
 Secure Electronic Monitoring Solution
@@ -131,6 +138,20 @@ RegisterNetEvent('RossMonitoring:UseBatteryItem', function(source)
         Battery.Recharge(identifier)
     else
         Framework.Notify(source, Config.Lang.not_monitored, "error")
+    end
+end)
+
+RegisterNetEvent('RossMonitoring:CheckPerson')
+AddEventHandler('RossMonitoring:CheckPerson', function(targetId)
+    local source = source
+    if not HasAccess(source) then return end
+    
+    local data = Framework.GetCharacterData(targetId)
+    
+    if data then
+        TriggerClientEvent('RossMonitoring:ReturnPersonData', source, data)
+    else
+        Framework.Notify(source, "Cidadão não encontrado.", "error")
     end
 end)
 
