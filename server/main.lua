@@ -32,7 +32,7 @@ Property of ROSS Development
 ]])
 end)
 
-local ActiveMonitors = {}
+ActiveMonitors = {} -- Global para ser acessível pelo battery.lua
 
 local function HasAccess(source)
     for _, entry in ipairs(Config.AllowedGroups) do

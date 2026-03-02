@@ -3,7 +3,7 @@ Config = {}
 -- Configurações Gerais
 Config.Debug = false -- Ativa logs de debug no console
 Config.CheckInterval = 5000 -- Intervalo de verificação de zona (ms)
-Config.BatteryDrainInterval = 60000 -- Intervalo de drenagem da bateria (ms)
+Config.BatteryDrainInterval = 18000 -- Intervalo de drenagem da bateria (ms) - 18s para 100% em 30min
 Config.BatteryDrainAmount = 1 -- Quantidade de bateria drenada por intervalo
 
 -- Sistema de Prisão Automática

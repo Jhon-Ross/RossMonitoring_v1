@@ -10,18 +10,23 @@ function Battery.StartLoop()
 end
 
 function Battery.ProcessDrain()
-    local monitors = Database.GetActiveMonitors()
-    if not monitors then return end
+    -- Usar a memória global ActiveMonitors em vez de ler do banco a cada tick
+    -- Isso evita conflitos de estado entre battery.lua e main.lua
+    if not ActiveMonitors then return end
 
-    for _, monitor in ipairs(monitors) do
+    for identifier, monitor in pairs(ActiveMonitors) do
         local newLevel = monitor.battery_level - Config.BatteryDrainAmount
         if newLevel < 0 then newLevel = 0 end
 
         if newLevel ~= monitor.battery_level then
-            Database.UpdateBattery(monitor.identifier, newLevel)
+            -- Atualiza memória
+            monitor.battery_level = newLevel
+            
+            -- Atualiza banco
+            Database.UpdateBattery(identifier, newLevel)
             
             -- Find player source if online
-            local source = Battery.GetSourceFromIdentifier(monitor.identifier)
+            local source = Battery.GetSourceFromIdentifier(identifier)
             if source then
                 TriggerClientEvent("RossMonitoring:UpdateBattery", source, newLevel)
                 

@@ -470,7 +470,7 @@ const Sidebar = ({
   const t = translations[settings.language as keyof typeof translations] || translations.en;
 
   return (
-    <aside className="w-72 bg-panel-dark border-r border-border-dark flex flex-col h-screen sticky top-0 shrink-0">
+    <aside className="w-72 bg-panel-dark border-r border-border-dark flex flex-col h-full shrink-0">
       <div className="p-6 flex flex-col h-full">
         {/* Branding */}
         <div className="flex items-center gap-3 mb-10">
@@ -2645,7 +2645,7 @@ const MapSelector = ({
   );
 };
 
-export default function App() {
+function App() {
   const [isVisible, setIsVisible] = useState(false);
   const isNui = typeof (window as any).GetParentResourceName === 'function';
 
@@ -2828,13 +2828,18 @@ export default function App() {
       <div className="w-[1280px] h-[820px] max-w-[96vw] max-h-[92vh] bg-background-dark rounded-2xl border border-white/10 shadow-[0_30px_120px_rgba(0,0,0,0.85)] overflow-hidden flex">
         <Sidebar activeTab={activeTab} onTabChange={setActiveTab} settings={settings} />
         
-        <main className="flex-1 flex flex-col min-w-0 relative overflow-y-auto">
+        <main className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
         {/* Background Decoration */}
         <div className="fixed top-0 right-0 p-8 opacity-5 pointer-events-none select-none z-0">
           <Shield size={240} className="text-white" />
         </div>
 
         <Header activeTab={activeTab} settings={settings} />
+
+        <div className={cn(
+          "flex-1 min-h-0 overflow-x-hidden flex flex-col",
+          activeTab === 'track' ? "overflow-hidden" : "overflow-y-auto"
+        )}>
 
         {activeTab === 'dashboard' && <Dashboard monitors={monitors} logs={logs} settings={settings} officers={officers} />}
 
@@ -3062,11 +3067,6 @@ export default function App() {
 
             {/* Footer Meta */}
             <div className="mt-6 flex justify-between items-center text-[10px] text-white font-medium uppercase tracking-widest">
-              <div className="flex items-center gap-4">
-                <span>{translations[settings.language as keyof typeof translations].server}: San Andreas RP #1</span>
-                <span>•</span>
-                <span>{translations[settings.language as keyof typeof translations].version}: 2.4.0-Stable</span>
-              </div>
               <div className="flex items-center gap-1 text-primary">
                 <Shield size={12} />
                 <span>{translations[settings.language as keyof typeof translations].securedAccess}</span>
@@ -3082,6 +3082,7 @@ export default function App() {
         {activeTab === 'settings' && <SystemSettings settings={settings} setSettings={setSettings} />}
 
         {activeTab === 'access' && <UserAccess settings={settings} officers={officers} setOfficers={setOfficers} logs={logs} />}
+        </div>
         </main>
 
         {showMapSelector && (
@@ -3094,4 +3095,6 @@ export default function App() {
       </div>
     </div>
   );
-}
+};
+
+export default App;

@@ -76,12 +76,12 @@ CreateThread(function()
             end
             
             SetTextFont(4)
-            SetTextScale(0.5, 0.5)
+            SetTextScale(0.35, 0.35) -- Reduzido de 0.5 para 0.35
             SetTextColour(255, 255, 255, 255)
             SetTextOutline()
             SetTextEntry("STRING")
             AddTextComponentString(text)
-            DrawText(0.85, 0.95)
+            DrawText(0.82, 0.96) -- Movido para baixo (0.96) conforme solicitado
 
             -- Draw Zone Marker if available
             if zoneData and zoneData.type == 'circle' then

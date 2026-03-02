@@ -85,6 +85,14 @@ CreateThread(function()
         if isOpen then
             DisableControlAction(0, 322, true)
             DisableControlAction(0, 200, true)
+            if not IsPauseMenuActive() then
+                DisableControlAction(0, 14, true)
+                DisableControlAction(0, 15, true)
+                DisableControlAction(0, 16, true)
+                DisableControlAction(0, 17, true)
+                DisableControlAction(0, 241, true)
+                DisableControlAction(0, 242, true)
+            end
             if panelFocused and (IsDisabledControlJustReleased(0, 322) or IsDisabledControlJustReleased(0, 200)) then
                 closePanel()
             end
