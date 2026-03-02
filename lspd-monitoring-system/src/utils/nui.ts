@@ -19,7 +19,7 @@ export const fetchNui = async (eventName: string, data: any = {}) => {
     return respFormatted;
   } catch (error) {
     console.error(`Error fetching NUI event ${eventName}:`, error);
-    return { status: 'ok', mock: true };
+    return { status: 'error' };
   }
 };
 

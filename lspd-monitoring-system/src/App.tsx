@@ -527,31 +527,7 @@ const Sidebar = ({
           />
         </nav>
 
-        {/* User Profile & Panic Button */}
-        <div className="mt-auto pt-6 border-t border-border-dark">
-          <div className="flex items-center gap-3 mb-6 p-2 bg-white/5 rounded-xl">
-            <div className="size-10 rounded-full bg-slate-700 overflow-hidden flex items-center justify-center">
-              <img 
-                src="https://picsum.photos/seed/officer/100/100" 
-                alt="Officer Avatar" 
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-bold truncate">Sgt. J. Miller</span>
-              <span className="text-[10px] text-police-red font-black uppercase tracking-tighter">{t.onDuty}</span>
-            </div>
-          </div>
-          <motion.button 
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-police-red hover:bg-red-600 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-lg shadow-red-900/20 transition-all uppercase text-xs tracking-widest"
-          >
-            <AlertTriangle size={14} />
-            {t.panic}
-          </motion.button>
-        </div>
+        <div className="mt-auto pt-6 border-t border-border-dark"></div>
       </div>
     </aside>
   );
@@ -845,9 +821,7 @@ const TrackDevices = ({
         <div className="absolute bottom-0 left-0 right-0 h-8 bg-[#0b0c10]/80 backdrop-blur-sm border-t border-border-dark flex items-center justify-between px-4 text-[9px] font-bold uppercase tracking-widest text-white">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5"><div className="size-1.5 bg-emerald-500 rounded-full"></div> {t.gpsActive}</span>
-            <span className="flex items-center gap-1.5"><div className="size-1.5 bg-primary rounded-full"></div> {t.encryption}: AES-256</span>
           </div>
-          <span>© LSPD High-Command Tracking Module {t.version} 4.1.0-Stable</span>
         </div>
       </div>
     </div>
@@ -1311,7 +1285,7 @@ const ArchiveLogs = ({ logs, settings }: { logs: any[], settings: any }) => {
       </div>
 
       <p className="text-center mt-12 text-[9px] font-bold text-white uppercase tracking-[0.2em]">
-        {t.adminSystem} © 2023 - {t.tamperEvident}
+        {t.adminSystem} © 2026 - {t.tamperEvident}
       </p>
     </div>
   );
@@ -1397,7 +1371,7 @@ const Dashboard = ({ monitors, logs, settings, officers }: { monitors: any[], lo
         name: officer.name,
         rank: `${officer.rank} • ${officer.dept}`,
         apps: counts[officer.name] || 0,
-        avatar: officer.avatar || `https://picsum.photos/seed/${officer.name}/100/100`
+        avatar: officer.avatar
       }))
       .sort((a, b) => b.apps - a.apps)
       .slice(0, 5)
@@ -1538,7 +1512,13 @@ const Dashboard = ({ monitors, logs, settings, officers }: { monitors: any[], lo
                 <div className="flex items-center gap-4">
                   <div className="relative">
                     <div className="size-10 rounded-full overflow-hidden border border-border-dark group-hover:border-primary/50 transition-all">
-                      <img src={officer.avatar} alt={officer.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      {officer.avatar ? (
+                        <img src={officer.avatar} alt={officer.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      ) : (
+                        <div className="w-full h-full bg-slate-800 flex items-center justify-center text-[10px] font-black text-white">
+                          {officer.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                        </div>
+                      )}
                     </div>
                     {officer.medal && (
                       <span className="absolute -bottom-1 -right-1 text-xs">{officer.medal}</span>
@@ -1569,7 +1549,7 @@ const Dashboard = ({ monitors, logs, settings, officers }: { monitors: any[], lo
             <div className="size-2 bg-emerald-500 rounded-full animate-pulse"></div>
             <span className="text-[10px] font-black text-white uppercase tracking-widest">{t.systemLive}</span>
           </div>
-          <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{t.lastSync}: 14:32:01 • {t.server}: US-WEST-01</p>
+          <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{t.lastSync}</p>
         </div>
         <div className="flex gap-6 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
           <a href="#" className="hover:text-primary transition-colors">{t.health}</a>
@@ -1917,8 +1897,7 @@ const UserAccess = ({ settings, officers, setOfficers, logs }: { settings: any, 
       dept: newOfficer.dept,
       level: newOfficer.isAdmin ? `${newOfficer.level} (Admin)` : newOfficer.level,
       status: 'ACTIVE',
-      initials: newOfficer.name.split(' ').map(n => n[0]).join(''),
-      avatar: `https://picsum.photos/seed/${newOfficer.name}/100/100`
+      initials: newOfficer.name.split(' ').map(n => n[0]).join('')
     };
 
     setOfficers(prev => [...prev, officerToAdd]);
@@ -2540,15 +2519,6 @@ const UserAccess = ({ settings, officers, setOfficers, logs }: { settings: any, 
         )}
       </AnimatePresence>
 
-      {/* Footer Meta */}
-      <div className="flex items-center justify-between pt-8 border-t border-border-dark">
-        <p className="text-[10px] font-bold text-white uppercase tracking-widest">Encrypted Terminal Session: 88A-710-F02</p>
-        <div className="flex gap-6 text-[10px] font-bold text-white uppercase tracking-widest">
-          <a href="#" className="hover:text-primary transition-colors">Legal Information</a>
-          <a href="#" className="hover:text-primary transition-colors">System Security</a>
-          <a href="#" className="hover:text-primary transition-colors">Protocol Manual</a>
-        </div>
-      </div>
     </div>
   );
 };
@@ -2728,6 +2698,7 @@ function App() {
   }, [settings.primaryColor]);
 
   useEffect(() => {
+    if (!import.meta.env.DEV) return;
     if (isNui || !settings.globalTracking) return;
 
     const interval = setInterval(() => {
@@ -2743,11 +2714,10 @@ function App() {
   }, [isNui, settings.globalTracking]);
 
   const addLog = (action: string, player: string, cid: string, reason: string) => {
+    if (isNui) return;
     const newLog = {
       id: Date.now(),
       dateTime: new Date().toISOString().replace('T', ' ').split('.')[0],
-      officer: 'Sgt. J. Miller',
-      badge: '#1024',
       action,
       player,
       cid,
@@ -2796,26 +2766,7 @@ function App() {
       },
       reason
     });
-
-    if (response?.mock) {
-      const newMonitor = {
-        id: passportId,
-        name: `ID: ${passportId}`,
-        age: null,
-        status: 'Active',
-        battery: 100,
-        location: 'Active',
-        priority: priority === 'high' ? 'High' : 'Low',
-        stability: 100,
-        x: 50,
-        y: 50,
-        zone: selectedZone,
-        avatar: `https://picsum.photos/seed/${passportId}/100/100`
-      };
-
-      setMonitors(prev => [...prev, newMonitor]);
-      addLog('APPLIED', newMonitor.name, newMonitor.id, reason);
-    }
+    if (response?.status && response.status !== 'ok') return;
     
     resetRegisterForm();
     setActiveTab('track');
