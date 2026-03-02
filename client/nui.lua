@@ -33,7 +33,7 @@ local function stopTabletAnim()
     local ped = PlayerPedId()
     ClearPedTasks(ped)
     if tabletObject and DoesEntityExist(tabletObject) then
-        DetachEntity(tabletObject, false, false)
+        DetachEntity(tabletObject, true, true)
         DeleteEntity(tabletObject)
         tabletObject = nil
     end

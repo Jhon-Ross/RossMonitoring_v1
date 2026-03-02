@@ -781,6 +781,20 @@ const TrackDevices = ({
               <p className="text-[10px] text-white font-mono uppercase mt-1">
                 ID: {selectedMonitor.id} • {selectedMonitor.status}
               </p>
+              <div className="mt-3">
+                <span className="text-[10px] font-bold text-white uppercase tracking-widest block mb-1">Tempo Restante:</span>
+                <span className="text-xs font-mono text-primary font-bold">
+                  {selectedMonitor.endTime ? (() => {
+                    const now = Math.floor(Date.now() / 1000);
+                    const remaining = selectedMonitor.endTime - now;
+                    if (remaining <= 0) return "Expirado";
+                    const hours = Math.floor(remaining / 3600);
+                    const minutes = Math.floor((remaining % 3600) / 60);
+                    const seconds = remaining % 60;
+                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                  })() : "N/A"}
+                </span>
+              </div>
               <div className="mt-3 grid grid-cols-2 gap-2 text-[10px] font-mono text-white">
                 <div className="bg-white/5 border border-white/10 rounded-lg px-3 py-2">
                   X: {selectedMonitor?.worldX ? Number(selectedMonitor.worldX).toFixed(1) : '-'}
@@ -2926,11 +2940,12 @@ export default function App() {
                           <select 
                             value={durationType}
                             onChange={(e) => setDurationType(e.target.value)}
-                            className="bg-white/5 border-none focus:ring-0 text-white text-xs font-bold uppercase py-3 pr-8 cursor-pointer border-l border-border-dark outline-none"
+                            className="bg-input-dark border-none focus:ring-0 text-white text-xs font-bold uppercase py-3 pr-8 cursor-pointer border-l border-border-dark outline-none appearance-none"
+                            style={{ backgroundColor: '#1e293b' }}
                           >
-                            <option>{translations[settings.language as keyof typeof translations].hours}</option>
-                            <option>{translations[settings.language as keyof typeof translations].days}</option>
-                            <option>{translations[settings.language as keyof typeof translations].weeks}</option>
+                            <option value="Hours" className="bg-[#1e293b] text-white hover:bg-primary">{translations[settings.language as keyof typeof translations].hours}</option>
+                            <option value="Days" className="bg-[#1e293b] text-white hover:bg-primary">{translations[settings.language as keyof typeof translations].days}</option>
+                            <option value="Weeks" className="bg-[#1e293b] text-white hover:bg-primary">{translations[settings.language as keyof typeof translations].weeks}</option>
                           </select>
                         </div>
                       </div>

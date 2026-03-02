@@ -75,41 +75,57 @@ CreateThread(function()
     while true do
         Wait(Config.CheckInterval)
         for identifier, monitor in pairs(ActiveMonitors) do
-            local source = Battery.GetSourceFromIdentifier(identifier)
-            if source then
-                local ped = GetPlayerPed(source)
-                local coords = GetEntityCoords(ped)
-                monitor.last_coords = { x = coords.x, y = coords.y, z = coords.z }
+            -- Verificar expiração do tempo
+            if monitor.end_time and os.time() >= monitor.end_time then
+                Database.RemoveMonitor(identifier, true)
+                ActiveMonitors[identifier] = nil
                 
-                -- Check if inside zone
-                local inside = false
-                if monitor.zone_data.type == "circle" then
-                    local dist = #(coords - vector3(monitor.zone_data.x, monitor.zone_data.y, monitor.zone_data.z))
-                    if dist <= monitor.zone_data.radius then
-                        inside = true
-                    end
-                elseif monitor.zone_data.type == "polygon" then
-                    -- TODO: Implement polygon check
-                    inside = true -- Placeholder
+                local source = Battery.GetSourceFromIdentifier(identifier)
+                if source then
+                    TriggerClientEvent('RossMonitoring:StopMonitoring', source)
+                    Framework.Notify(source, "Seu tempo de monitoramento acabou. Você está livre.", "success")
                 end
-
-                if not inside then
-                    -- Player is outside zone
-                    if not monitor.out_time then
-                        monitor.out_time = os.time()
-                        Framework.Notify(source, Config.Lang.out_of_zone, "error")
-                    else
-                        local timeOut = os.time() - monitor.out_time
-                        if timeOut >= (Config.MaxOutOfZoneTime * 60) then
-                            -- Prison logic
-                            Prison.CheckViolation(source, identifier)
-                            monitor.out_time = nil -- Reset after prison
+            else
+                local source = Battery.GetSourceFromIdentifier(identifier)
+                if source then
+                    local ped = GetPlayerPed(source)
+                    local coords = GetEntityCoords(ped)
+                    monitor.last_coords = { x = coords.x, y = coords.y, z = coords.z }
+                    
+                    -- Check if inside zone
+                    local inside = false
+                    if monitor.zone_data.type == "circle" then
+                        local dist = #(coords - vector3(monitor.zone_data.x, monitor.zone_data.y, monitor.zone_data.z))
+                        if dist <= monitor.zone_data.radius then
+                            inside = true
                         end
+                    elseif monitor.zone_data.type == "polygon" then
+                        -- TODO: Implement polygon check
+                        inside = true -- Placeholder
                     end
-                else
-                    if monitor.out_time then
-                        monitor.out_time = nil
-                        Framework.Notify(source, Config.Lang.returned_to_zone, "success")
+
+                    if not inside then
+                        -- Player is outside zone
+                        TriggerClientEvent('RossMonitoring:ZoneStatus', source, false)
+                        
+                        if not monitor.out_time then
+                            monitor.out_time = os.time()
+                            Framework.Notify(source, Config.Lang.out_of_zone, "error")
+                        else
+                            local timeOut = os.time() - monitor.out_time
+                            if timeOut >= (Config.MaxOutOfZoneTime * 60) then
+                                -- Prison logic
+                                Prison.CheckViolation(source, identifier)
+                                monitor.out_time = nil -- Reset after prison
+                            end
+                        end
+                    else
+                        TriggerClientEvent('RossMonitoring:ZoneStatus', source, true)
+                        
+                        if monitor.out_time then
+                            monitor.out_time = nil
+                            Framework.Notify(source, Config.Lang.returned_to_zone, "success")
+                        end
                     end
                 end
             end
@@ -173,6 +189,7 @@ AddEventHandler('RossMonitoring:RequestData', function()
                     status = 'Active',
                     priority = 'Low',
                     stability = 100,
+                    endTime = data.end_time, -- Envia tempo de término para o Painel da Polícia (RequestData)
                     x = 50,
                     y = 50,
                     worldX = data.last_coords and data.last_coords.x or nil,
@@ -248,12 +265,15 @@ AddEventHandler('RossMonitoring:ApplyMonitor', function(data)
         if targetSource then
             TriggerClientEvent('RossMonitoring:StartMonitoring', targetSource, {
                 battery = 100,
-                zone = zone
+                zone = zone,
+                endTime = endTime, -- Envia tempo de término absoluto (para UI se precisar)
+                remainingTime = endTime - os.time() -- Envia segundos restantes (para cronômetro preciso)
             })
             Framework.Notify(targetSource, Config.Lang.monitor_applied, "info")
         end
         
         Framework.Notify(source, Config.Lang.monitor_applied, "success")
+        TriggerClientEvent('RossMonitoring:PlayInstallAnim', source) -- Dispara animação no policial
         TriggerClientEvent('RossMonitoring:UpdateUI', source, { monitors = (function()
             local monitorsList = {}
             for _, m in pairs(ActiveMonitors) do
@@ -267,6 +287,7 @@ AddEventHandler('RossMonitoring:ApplyMonitor', function(data)
                         status = 'Active',
                         priority = 'Low',
                         stability = 100,
+                        endTime = m.end_time, -- Envia tempo de término para o Painel da Polícia
                         x = 50,
                         y = 50,
                         worldX = m.last_coords and m.last_coords.x or nil,
@@ -334,6 +355,7 @@ AddEventHandler('RossMonitoring:RemoveMonitor', function(targetId)
                         status = 'Active',
                         priority = 'Low',
                         stability = 100,
+                        endTime = m.end_time, -- Envia tempo de término para o Painel da Polícia (UpdateUI)
                         x = 50,
                         y = 50,
                         worldX = m.last_coords and m.last_coords.x or nil,
@@ -380,7 +402,9 @@ AddEventHandler('RossMonitoring:PlayerLoaded', function()
     if identifier and ActiveMonitors[identifier] then
         TriggerClientEvent('RossMonitoring:StartMonitoring', source, {
             battery = ActiveMonitors[identifier].battery_level,
-            zone = ActiveMonitors[identifier].zone_data
+            zone = ActiveMonitors[identifier].zone_data,
+            endTime = ActiveMonitors[identifier].end_time,
+            remainingTime = ActiveMonitors[identifier].end_time - os.time() -- Recalcula tempo restante na reconexão
         })
     end
 end)
