@@ -139,11 +139,13 @@ if Config.ShopNPC.enabled then
             if dist < 2.0 then
                 sleep = 5
                 SetTextComponentFormat("STRING")
-                AddTextComponentString("Pressione ~INPUT_CONTEXT~ para comprar bateria ($" .. Config.ShopNPC.batteryPrice .. ")")
+                AddTextComponentString("Pressione ~INPUT_CONTEXT~ Bateria ($" .. Config.ShopNPC.batteryPrice .. ") | ~INPUT_DETONATE~ Tornozeleira ($" .. Config.ShopNPC.braceletPrice .. ")")
                 DisplayHelpTextFromStringLabel(0, 0, 1, -1)
 
                 if IsControlJustPressed(0, 38) then
                     TriggerServerEvent('RossMonitoring:BuyBattery')
+                elseif IsControlJustPressed(0, 47) then
+                    TriggerServerEvent('RossMonitoring:BuyMonitor')
                 end
             end
             Wait(sleep)

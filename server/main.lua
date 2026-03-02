@@ -148,10 +148,21 @@ elseif Framework.Type == 'qbcore' then
     end)
 end
 
-RegisterNetEvent('RossMonitoring:UseBatteryItem', function(source)
+RegisterNetEvent('RossMonitoring:UseBatteryItem')
+AddEventHandler('RossMonitoring:UseBatteryItem', function(targetSource, passport, item_full)
+    local source = targetSource or source
     local identifier = Framework.GetIdentifier(source)
+    
     if ActiveMonitors[identifier] then
-        Battery.Recharge(identifier)
+        if passport and item_full then -- vRP check
+             if Framework.TakeItem(source, item_full, 1) then
+                 Battery.Recharge(identifier)
+             else
+                 Framework.Notify(source, "Você não possui bateria.", "error")
+             end
+        else
+             Battery.Recharge(identifier)
+        end
     else
         Framework.Notify(source, Config.Lang.not_monitored, "error")
     end
@@ -234,6 +245,11 @@ RegisterNetEvent('RossMonitoring:ApplyMonitor')
 AddEventHandler('RossMonitoring:ApplyMonitor', function(data)
     local source = source
     if not HasAccess(source) then return end
+
+    if not Framework.TakeItem(source, "tornozeleira", 1) then
+        Framework.Notify(source, "Você precisa de uma tornozeleira.", "error")
+        return
+    end
     
     local targetId = data.id
     local duration = tonumber(data.duration) or 1
@@ -322,6 +338,7 @@ AddEventHandler('RossMonitoring:ApplyMonitor', function(data)
             return logsList
         end)() })
     else
+        Framework.GiveItem(source, "tornozeleira", 1)
         Framework.Notify(source, "Erro ao aplicar tornozeleira (Já existe?).", "error")
     end
 end)
@@ -400,11 +417,18 @@ AddEventHandler('RossMonitoring:PlayerLoaded', function()
     local identifier = Framework.GetIdentifier(source)
     
     if identifier and ActiveMonitors[identifier] then
+        local monitor = ActiveMonitors[identifier]
+        
+        -- Verificar bateria zero ao conectar
+        if tonumber(monitor.battery_level) <= 0 and Config.PrisonOnBatteryZero then
+             Prison.CheckViolation(source, identifier, "Bateria Esgotada")
+        end
+
         TriggerClientEvent('RossMonitoring:StartMonitoring', source, {
-            battery = ActiveMonitors[identifier].battery_level,
-            zone = ActiveMonitors[identifier].zone_data,
-            endTime = ActiveMonitors[identifier].end_time,
-            remainingTime = ActiveMonitors[identifier].end_time - os.time() -- Recalcula tempo restante na reconexão
+            battery = monitor.battery_level,
+            zone = monitor.zone_data,
+            endTime = monitor.end_time,
+            remainingTime = monitor.end_time - os.time()
         })
     end
 end)
@@ -413,8 +437,19 @@ RegisterNetEvent('RossMonitoring:BuyBattery')
 AddEventHandler('RossMonitoring:BuyBattery', function()
     local source = source
     if Framework.RemoveMoney(source, Config.ShopNPC.batteryPrice) then
-        Framework.GiveItem(source, "battery_pack", 1)
+        Framework.GiveItem(source, "bateriatorn", 1)
         Framework.Notify(source, string.format(Config.Lang.bought_item, "Bateria", Config.ShopNPC.batteryPrice), "success")
+    else
+        Framework.Notify(source, Config.Lang.insufficient_funds, "error")
+    end
+end)
+
+RegisterNetEvent('RossMonitoring:BuyMonitor')
+AddEventHandler('RossMonitoring:BuyMonitor', function()
+    local source = source
+    if Framework.RemoveMoney(source, Config.ShopNPC.braceletPrice) then
+        Framework.GiveItem(source, "tornozeleira", 1)
+        Framework.Notify(source, string.format(Config.Lang.bought_item, "Tornozeleira", Config.ShopNPC.braceletPrice), "success")
     else
         Framework.Notify(source, Config.Lang.insufficient_funds, "error")
     end

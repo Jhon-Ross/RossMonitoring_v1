@@ -189,3 +189,38 @@ function Framework.GiveItem(source, item, count)
     end
     return false
 end
+
+function Framework.HasItem(source, item, count)
+    if Framework.Type == 'vrp' then
+        local passport = vRP.Passport(source)
+        if not passport then return false end
+        return vRP.InventoryItemAmount(passport, item)[1] >= count
+    elseif Framework.Type == 'esx' then
+        local xPlayer = ESX.GetPlayerFromId(source)
+        local itemData = xPlayer.getInventoryItem(item)
+        return itemData and itemData.count >= count
+    elseif Framework.Type == 'qbcore' then
+        local Player = QBCore.Functions.GetPlayer(source)
+        local itemData = Player.Functions.GetItemByName(item)
+        return itemData and itemData.amount >= count
+    end
+    return false
+end
+
+function Framework.TakeItem(source, item, count)
+    if Framework.Type == 'vrp' then
+        local passport = vRP.Passport(source)
+        if not passport then return false end
+        return vRP.TakeItem(passport, item, count, true)
+    elseif Framework.Type == 'esx' then
+        local xPlayer = ESX.GetPlayerFromId(source)
+        if xPlayer.getInventoryItem(item).count >= count then
+            xPlayer.removeInventoryItem(item, count)
+            return true
+        end
+    elseif Framework.Type == 'qbcore' then
+        local Player = QBCore.Functions.GetPlayer(source)
+        return Player.Functions.RemoveItem(item, count)
+    end
+    return false
+end

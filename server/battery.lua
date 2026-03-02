@@ -34,7 +34,26 @@ function Battery.ProcessDrain()
                     Framework.Notify(source, Config.Lang.battery_low, "warning")
                 elseif newLevel == 0 then
                     Framework.Notify(source, Config.Lang.battery_critical, "error")
-                    -- Notify police here (TODO)
+                    
+                    if Config.PrisonOnBatteryZero then
+                         Prison.CheckViolation(source, identifier, "Bateria Esgotada")
+                    else
+                        -- Notify police here
+                        local ped = GetPlayerPed(source)
+                        local coords = GetEntityCoords(ped)
+                        local Groups = vRP.Groups()
+                        for key,Value in pairs(Groups) do
+                            if Value["Type"] == "Policia" then
+                                local Service = vRP.NumPermission(key)
+                                for Passports,Sources in pairs(Service) do
+                                    async(function()
+                                        vRPC.PlaySound(Sources,"ATM_WINDOW","HUD_FRONTEND_DEFAULT_SOUNDSET")
+                                        TriggerClientEvent("NotifyPush",Sources,{ code = "911", title = "Tornozeleira Descarregada", x = coords["x"], y = coords["y"], z = coords["z"], criminal = "Monitoramento", color = 16 })
+                                    end)
+                                end
+                            end
+                        end
+                    end
                 end
             end
         end

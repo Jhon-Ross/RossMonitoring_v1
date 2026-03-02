@@ -1,20 +1,32 @@
 Prison = {}
 
 function Prison.Imprison(source, reason)
-    if not Config.AutoPrison then return end
-    
     local ped = GetPlayerPed(source)
     if DoesEntityExist(ped) then
+        local coords = GetEntityCoords(ped)
+        local dist = #(coords - Config.PrisonCoords)
+        
+        -- Se já estiver na prisão (raio de 100m), não teletransporta novamente
+        if dist < 100.0 then
+            return
+        end
+
         SetEntityCoords(ped, Config.PrisonCoords.x, Config.PrisonCoords.y, Config.PrisonCoords.z, false, false, false, false)
+        
+        -- Se não for apenas uma verificação de rotina (distância > 100m), notifica
         Framework.Notify(source, Config.Lang.prison_sent .. " (" .. reason .. ")", "error")
-        -- Add prison logic here (e.g. set jail time via framework if needed)
-        -- For now just teleport
     end
 end
 
-function Prison.CheckViolation(source, identifier)
-    -- This function will be called when a player is out of zone for too long
-    Prison.Imprison(source, "Violação de Perímetro")
+function Prison.CheckViolation(source, identifier, reason)
+    reason = reason or "Violação de Perímetro"
+    
+    -- Verifica configuração baseada no motivo
+    if reason == "Violação de Perímetro" and not Config.AutoPrison then
+        return
+    end
+
+    Prison.Imprison(source, reason)
     -- Log violation in database
     -- TODO: Add violation logging
 end

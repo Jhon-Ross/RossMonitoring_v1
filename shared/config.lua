@@ -5,6 +5,7 @@ Config.Debug = false -- Ativa logs de debug no console
 Config.CheckInterval = 5000 -- Intervalo de verificação de zona (ms)
 Config.BatteryDrainInterval = 18000 -- Intervalo de drenagem da bateria (ms) - 18s para 100% em 30min
 Config.BatteryDrainAmount = 1 -- Quantidade de bateria drenada por intervalo
+Config.PrisonOnBatteryZero = true -- Se true, o jogador é enviado para a prisão quando a bateria acaba
 
 -- Sistema de Prisão Automática
 Config.AutoPrison = true -- Se true, teleporta automaticamente para a prisão após sair da zona
