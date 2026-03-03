@@ -1,14 +1,10 @@
 # 🚔 R.P.M.S — ROSS Police Monitoring System (RossMonitoring_v1)
 
+![RossMonitoringV1](<arte tornozeleira 1200×630.png>)
+
 ## Compre agora / Suporte
 
-| | |
-|---|---|
-| [![Discord](https://img.shields.io/badge/DISCORD-ENTRAR-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/Tax7zUGy7C) | [![Entrar Agora](https://img.shields.io/badge/ENTRAR-AGORA-3B82F6?style=for-the-badge)](https://discord.com/invite/Tax7zUGy7C) |
-
-🔗 **Clique aqui para entrar no Discord:** https://discord.com/invite/Tax7zUGy7C
-
-![RossMonitoringV1](<arte tornozeleira 1200×630.png>)
+[![Discord](https://img.shields.io/badge/DISCORD-ENTRAR%20AGORA-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/Tax7zUGy7C)
 
 ✨ Sistema profissional de monitoramento policial com **tornozeleira eletrônica** para FiveM: **zona permitida**, **bateria**, **HUD** e **painel NUI (tablet)** para gestão completa e rastreio.
 
