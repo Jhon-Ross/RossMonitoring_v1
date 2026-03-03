@@ -14,6 +14,7 @@ Property of ROSS Development
 ]] 
 
 fx_version 'cerulean'
+lua54 'yes'
 game 'gta5'
 author 'RossMonitoring'
 description 'Sistema de Monitoramento Policial (Tornozeleira Eletrônica)'

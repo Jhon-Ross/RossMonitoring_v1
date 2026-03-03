@@ -61,6 +61,9 @@ function Battery.ProcessDrain()
 end
 
 function Battery.Recharge(identifier)
+    if ActiveMonitors[identifier] then
+        ActiveMonitors[identifier].battery_level = 100
+    end
     Database.UpdateBattery(identifier, 100)
     local source = Battery.GetSourceFromIdentifier(identifier)
     if source then
