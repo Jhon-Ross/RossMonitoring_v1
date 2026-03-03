@@ -1,6 +1,6 @@
 # 🚔 R.P.M.S — ROSS Police Monitoring System (RossMonitoring_v1)
 
-![RossMonitoringV1](<arte tornozeleira 1200×630.png>)
+![RossMonitoringV1](<imgs/arte tornozeleira 1200×630.png>)
 
 ## Compre agora / Suporte
 
