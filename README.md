@@ -1,5 +1,7 @@
 # R.P.M.S — ROSS Police Monitoring System (RossMonitoring_v1)
 
+![RossMonitoringV1](<arte tornozeleira 1200×630.png>)
+
 Sistema de monitoramento policial com tornozeleira eletrônica para FiveM, com zona permitida, bateria, HUD e painel NUI (tablet) para gestão e rastreio.
 
 ## Visão geral
@@ -132,4 +134,3 @@ Tabelas principais:
 ## Licença
 
 Veja o arquivo [LICENSE](file:///c:/Users/Jhon%20Ross/Desktop/Base_HidenSP_v2/resources/[scripts]/RossMonitoring_v1/LICENSE).
-
