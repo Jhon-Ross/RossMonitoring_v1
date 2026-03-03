@@ -1,31 +1,42 @@
-# R.P.M.S — ROSS Police Monitoring System (RossMonitoring_v1)
+# 🚔 R.P.M.S — ROSS Police Monitoring System (RossMonitoring_v1)
 
 ![RossMonitoringV1](<arte tornozeleira 1200×630.png>)
 
-Sistema de monitoramento policial com tornozeleira eletrônica para FiveM, com zona permitida, bateria, HUD e painel NUI (tablet) para gestão e rastreio.
+✨ Sistema profissional de monitoramento policial com **tornozeleira eletrônica** para FiveM: **zona permitida**, **bateria**, **HUD** e **painel NUI (tablet)** para gestão completa e rastreio.
 
-## Visão geral
+## 🔎 Visão geral
 
-O **R.P.M.S** permite aplicar uma tornozeleira em um jogador, definir uma **zona permitida** (ex.: círculo), acompanhar **status/bateria/tempo** no HUD e administrar tudo por um **painel NUI**. O sistema registra informações em banco de dados (MySQL/MariaDB via **oxmysql**) para persistência e auditoria.
+O **R.P.M.S** foi feito para servidores que querem um fluxo policial moderno e confiável: aplique uma tornozeleira em um jogador, defina a **zona permitida** (ex.: círculo), acompanhe **status/bateria/tempo** no HUD e administre tudo por um **tablet NUI**. Os dados são persistidos em **MySQL/MariaDB** via **oxmysql**, com histórico e auditoria.
 
-## Principais recursos
+## 📌 Destaques
 
-- Tornozeleira eletrônica com **HUD** (bateria, tempo restante e status de zona).
-- **Zona permitida** com marcador visual (círculo) e status “na zona / fora da zona”.
-- **Bateria** com drenagem configurável e regras (ex.: ações ao zerar).
-- **Prisão automática** configurável após violar a zona por tempo limite.
-- **Painel NUI (tablet)** para aplicar/remover/consultar monitoramento e rastrear último local.
-- **NPC vendedor** (opcional) para comprar tornozeleira e bateria (teclas configuradas no client).
-- Banco de dados com tabelas para **ativos, histórico, eventos, oficiais e configurações**.
-- Compatibilidade de load do player para **vRP / ESX / QBCore** (gatilhos de “player loaded” no client).
+- 🖥️ **HUD completo** (bateria, tempo restante e status de zona)
+- 🧭 **Zona permitida** com marcador visual e alertas “na zona / fora da zona”
+- 🔋 **Bateria configurável** (drenagem, regras e punições)
+- ⛓️ **Prisão automática** (violação de zona por tempo limite)
+- 📱 **Tablet NUI** para aplicar/remover/consultar e rastrear último local
+- 🧑‍🔧 **NPC vendedor** opcional (tornozeleira e bateria)
+- 🗃️ **Banco de dados** com ativos, histórico e eventos para auditoria
+- 🧩 Compatível com **vRP / ESX / QBCore** (gatilhos de “player loaded” no client)
 
-## Requisitos
+## 🧷 Índice
+
+- ✅ Requisitos
+- ⚙️ Instalação
+- 🔧 Configuração (shared/config.lua)
+- 🎮 Uso
+- 🗄️ Banco de dados
+- 🧱 Estrutura do resource
+- 🆘 Suporte
+- 📄 Licença
+
+## ✅ Requisitos
 
 - **oxmysql** (obrigatório)
 - MySQL/MariaDB
 - Artefatos do FiveM com suporte a **Lua 5.4**
 
-## Instalação
+## ⚙️ Instalação
 
 1. Coloque a pasta `RossMonitoring_v1` em:
    - `resources/[scripts]/RossMonitoring_v1`
@@ -41,7 +52,7 @@ ensure RossMonitoring_v1
 4. Ajuste as configurações em:
    - `shared/config.lua`
 
-## Configuração (shared/config.lua)
+## 🔧 Configuração (shared/config.lua)
 
 Arquivo: [config.lua](file:///c:/Users/Jhon%20Ross/Desktop/Base_HidenSP_v2/resources/[scripts]/RossMonitoring_v1/shared/config.lua)
 
@@ -64,9 +75,9 @@ Arquivo: [config.lua](file:///c:/Users/Jhon%20Ross/Desktop/Base_HidenSP_v2/resou
 | `Config.PropModel/Bone/Offset` | `p_ld_sock_01` | Prop preso ao pé do player |
 | `Config.Lang.*` | PT-BR | Textos/avisos do sistema |
 
-## Uso
+## 🎮 Uso
 
-### Painel (NUI / tablet)
+### 📱 Painel (NUI / tablet)
 
 O painel NUI é aberto via evento client:
 
@@ -80,7 +91,7 @@ TriggerClientEvent('RossMonitoring:OpenUI', source)
 
 O front-end (NUI) já está compilado em `web/` e é carregado via `ui_page` no manifest.
 
-### NPC vendedor
+### 🧑‍🔧 NPC vendedor
 
 Quando `Config.ShopNPC.enabled = true`, um NPC é criado no local configurado. Perto dele (distância ~2.0):
 
@@ -89,7 +100,7 @@ Quando `Config.ShopNPC.enabled = true`, um NPC é criado no local configurado. P
 
 Os preços vêm de `Config.ShopNPC.batteryPrice` e `Config.ShopNPC.braceletPrice`.
 
-### HUD / marcador de zona
+### 🖥️ HUD / marcador de zona
 
 Quando um jogador está monitorado, o client exibe:
 
@@ -98,11 +109,11 @@ Quando um jogador está monitorado, o client exibe:
 - Status da zona (`Na Zona` / `FORA DA ZONA!`)
 - Marcador visual (círculo) quando a zona é do tipo `circle`
 
-### Comando útil
+### 🧪 Comando útil
 
 - `/checkmonitor` — força ressincronização do monitoramento (útil para debug/fallback).
 
-## Banco de dados
+## 🗄️ Banco de dados
 
 Arquivo: [rossmonitoring_schema.sql](file:///c:/Users/Jhon%20Ross/Desktop/Base_HidenSP_v2/resources/[scripts]/RossMonitoring_v1/sql/rossmonitoring_schema.sql)
 
@@ -114,7 +125,7 @@ Tabelas principais:
 - `monitoring_officers` — cadastro de oficiais (opcional)
 - `monitoring_settings` — chave/valor para configurações persistentes (opcional)
 
-## Estrutura do resource
+## 🧱 Estrutura do resource
 
 - `client/` — HUD, NUI, prop e lógica de interface
 - `server/` — persistência, regras, integração com framework e punições
@@ -122,7 +133,13 @@ Tabelas principais:
 - `web/` — NUI compilada (assets)
 - `sql/` — schema do banco
 
-## Troubleshooting
+## 🆘 Suporte
+
+Entre na comunidade para suporte, atualizações e novidades:
+
+- Discord: https://discord.com/invite/Tax7zUGy7C
+
+## 🛠️ Troubleshooting
 
 - NUI não abre:
   - Verifique `ensure oxmysql` antes do resource.
@@ -131,6 +148,6 @@ Tabelas principais:
 - HUD some:
   - Use `/checkmonitor` para ressincronizar.
 
-## Licença
+## 📄 Licença
 
 Veja o arquivo [LICENSE](file:///c:/Users/Jhon%20Ross/Desktop/Base_HidenSP_v2/resources/[scripts]/RossMonitoring_v1/LICENSE).
